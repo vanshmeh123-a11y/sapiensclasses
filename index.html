@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sapiens Classes | Notes Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #06060f;
+    --card: #111127;
+    --border: rgba(99,102,241,0.18);
+    --border-hover: rgba(99,102,241,0.55);
+    --indigo: #6366f1;
+    --indigo-light: #818cf8;
+    --indigo-dim: rgba(99,102,241,0.12);
+    --pink: #ec4899;
+    --pink-dim: rgba(236,72,153,0.12);
+    --text: #f0f0ff;
+    --muted: #8b8bab;
+    --faint: #3a3a5c;
+    --radius: 16px;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 60%, rgba(255,255,255,0.35) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 10%, rgba(255,255,255,0.45) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 75%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 85%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 45%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(600px 600px at 20% -10%, rgba(99,102,241,0.07) 0%, transparent 70%),
+      radial-gradient(500px 500px at 80% 110%, rgba(236,72,153,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .wrapper { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 20px 80px; }
+
+  /* Header */
+  header { text-align: center; padding: 60px 20px 50px; }
+  .logo-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--indigo-dim); border: 1px solid var(--border);
+    border-radius: 99px; padding: 6px 16px;
+    font-size: 11px; letter-spacing: 0.12em; color: var(--indigo-light);
+    text-transform: uppercase; margin-bottom: 24px;
+  }
+  .logo-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--indigo); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    font-weight: 800; letter-spacing: -0.03em; line-height: 1.05;
+    background: linear-gradient(135deg, #fff 0%, #c7d2fe 50%, #a5b4fc 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin-bottom: 14px;
+  }
+  .tagline { font-size: 15px; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 28px; }
+  .yt-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, #6366f1, #818cf8); color: #fff;
+    text-decoration: none; padding: 11px 24px; border-radius: 99px;
+    font-size: 14px; font-weight: 500; transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 24px rgba(99,102,241,0.3);
+  }
+  .yt-btn:hover { transform: translateY(-2px); box-shadow: 0 0 36px rgba(99,102,241,0.45); }
+
+  /* Pages */
+  .page { display: none; animation: fadeIn 0.3s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* Section heading */
+  .section-head { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .section-line { width: 4px; height: 24px; border-radius: 2px; background: linear-gradient(to bottom, var(--indigo), var(--indigo-light)); }
+  .section-line.pink { background: linear-gradient(to bottom, var(--pink), #f472b6); }
+  .section-head h2 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--text); }
+
+  /* Grids */
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 48px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+
+  /* Main card */
+  .s-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 26px; cursor: pointer; transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .s-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--indigo), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .s-card:hover::before { opacity: 1; }
+  .s-card:hover { border-color: var(--border-hover); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(99,102,241,0.15); }
+  .s-card.pink-accent:hover { border-color: rgba(236,72,153,0.55); box-shadow: 0 12px 40px rgba(236,72,153,0.12); }
+  .s-card.pink-accent::before { background: linear-gradient(90deg, transparent, var(--pink), transparent); }
+  .card-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 16px;
+    background: var(--indigo-dim); border: 1px solid var(--border);
+  }
+  .card-icon.pink-icon { background: var(--pink-dim); border-color: rgba(236,72,153,0.2); }
+  .badge {
+    display: inline-block; font-size: 10px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 99px; margin-bottom: 10px;
+    background: var(--indigo-dim); color: var(--indigo-light); border: 1px solid var(--border);
+  }
+  .badge.pink { background: var(--pink-dim); color: #f472b6; border-color: rgba(236,72,153,0.2); }
+  .s-card h3 { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+  .s-card p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+  .card-arrow { font-size: 12px; color: var(--indigo-light); display: flex; align-items: center; gap: 6px; }
+  .card-arrow.pink { color: #f472b6; }
+
+  /* Subject card */
+  .subj-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 26px 22px; cursor: pointer; transition: all 0.25s; text-align: center;
+  }
+  .subj-card:hover { border-color: var(--border-hover); transform: translateY(-3px); box-shadow: 0 8px 32px rgba(99,102,241,0.15); }
+  .subj-icon { font-size: 30px; margin-bottom: 14px; }
+  .subj-card h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+  .subj-card p { font-size: 12px; color: var(--muted); }
+
+  /* Coming soon */
+  .coming-soon {
+    text-align: center; padding: 80px 20px;
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  }
+  .coming-soon .cs-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+  .coming-soon h3 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; color: var(--muted); }
+  .coming-soon p { font-size: 14px; color: var(--faint); }
+
+  /* Back button */
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--indigo-dim); border: 1px solid var(--border); border-radius: 99px;
+    padding: 9px 18px; font-size: 13px; color: var(--indigo-light);
+    cursor: pointer; transition: all 0.2s; margin-bottom: 32px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .back-btn:hover { background: rgba(99,102,241,0.22); border-color: var(--border-hover); }
+
+  /* Chapter list */
+  .chapter-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .unit-label {
+    padding: 10px 22px; background: var(--indigo-dim); border-bottom: 1px solid var(--border);
+    font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--indigo-light);
+  }
+  .ch-row {
+    display: flex; align-items: center; padding: 16px 22px;
+    border-bottom: 1px solid rgba(99,102,241,0.07); gap: 14px; transition: background 0.2s;
+  }
+  .ch-row:last-child { border-bottom: none; }
+  .ch-row:hover { background: rgba(99,102,241,0.05); }
+  .ch-num {
+    min-width: 34px; height: 34px; border-radius: 8px;
+    background: var(--indigo-dim); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: var(--indigo-light);
+    font-family: 'Syne', sans-serif; flex-shrink: 0;
+  }
+  .ch-name { flex: 1; font-size: 14px; color: var(--text); }
+  .ch-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .btn-view, .btn-dl {
+    padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 500;
+    cursor: pointer; text-decoration: none; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: 'DM Sans', sans-serif; white-space: nowrap;
+  }
+  .btn-view { background: var(--indigo-dim); border: 1px solid var(--border); color: var(--indigo-light); }
+  .btn-view:hover { background: rgba(99,102,241,0.25); border-color: var(--border-hover); }
+  .btn-dl { background: transparent; border: 1px solid var(--faint); color: var(--muted); }
+  .btn-dl:hover { border-color: var(--indigo-light); color: var(--indigo-light); }
+
+  /* Page title */
+  .page-title { margin-bottom: 28px; }
+  .page-title .sup { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--indigo-light); margin-bottom: 6px; }
+  .page-title h2 { font-family: 'Syne', sans-serif; font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; color: var(--text); }
+
+  footer { text-align: center; padding: 40px 20px 20px; font-size: 13px; color: var(--faint); }
+
+  @media (max-width: 500px) {
+    .ch-row { flex-wrap: wrap; }
+    .ch-actions { width: 100%; justify-content: flex-end; }
+    .ch-name { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <div class="logo-badge"><div class="logo-dot"></div> Notes Portal</div>
+    <h1>Sapiens Classes</h1>
+    <p class="tagline">Evolution of Learning · CBSE Excellence</p>
+    <a href="https://www.youtube.com/@VanshMehrasapiens" target="_blank" class="yt-btn">▶ Visit YouTube Channel</a>
+  </header>
+
+  <!-- HOME -->
+  <div id="page-home" class="page active">
+    <div class="section-head"><div class="section-line"></div><h2>Main Lecture Series</h2></div>
+    <div class="grid-3">
+
+      <div class="s-card" onclick="goTo('page-ultimate')">
+        <div class="card-icon">⚛️</div>
+        <div class="badge">Class 10</div>
+        <h3>Ultimate Series</h3>
+        <p>Complete Class 10 CBSE notes — Science, SST, English &amp; Hindi.</p>
+        <div class="card-arrow">Browse Series →</div>
+      </div>
+
+      <div class="s-card" onclick="goTo('page-coming','Storm Series','⚡','Class 11')">
+        <div class="card-icon">⚡</div>
+        <div class="badge">Class 11</div>
+        <h3>Storm Series</h3>
+        <p>High-voltage concepts and deep-dive notes for Class 11.</p>
+        <div class="card-arrow">Coming Soon →</div>
+      </div>
+
+      <div class="s-card" onclick="goTo('page-coming','Final Frontier','🚀','Class 12')">
+        <div class="card-icon">🚀</div>
+        <div class="badge">Class 12</div>
+        <h3>Final Frontier</h3>
+        <p>Advanced board exam preparation notes for Class 12.</p>
+        <div class="card-arrow">Coming Soon →</div>
+      </div>
+    </div>
+
+    <div class="section-head"><div class="section-line pink"></div><h2>Revision &amp; Crash Courses</h2></div>
+    <div class="grid-3">
+
+      <div class="s-card pink-accent" onclick="goTo('page-coming','Ultimate Revision','🔄','Revision · 10th')">
+        <div class="card-icon pink-icon">🔄</div>
+        <div class="badge pink">Revision · 10th</div>
+        <h3>Ultimate Revision</h3>
+        <p>One-shot revision notes to ace your Class 10 boards.</p>
+        <div class="card-arrow pink">Coming Soon →</div>
+      </div>
+
+      <div class="s-card pink-accent" onclick="goTo('page-coming','Storm Revision','⚡','Revision · 11th')">
+        <div class="card-icon pink-icon">⚡</div>
+        <div class="badge pink">Revision · 11th</div>
+        <h3>Storm Revision</h3>
+        <p>Quick recall and formula sheets for Class 11.</p>
+        <div class="card-arrow pink">Coming Soon →</div>
+      </div>
+
+      <div class="s-card pink-accent" onclick="goTo('page-coming','Frontier Revision','🚀','Revision · 12th')">
+        <div class="card-icon pink-icon">🚀</div>
+        <div class="badge pink">Revision · 12th</div>
+        <h3>Frontier Revision</h3>
+        <p>Last-minute shortcuts &amp; board exam prep for Class 12.</p>
+        <div class="card-arrow pink">Coming Soon →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ULTIMATE SERIES — Subjects -->
+  <div id="page-ultimate" class="page">
+    <button class="back-btn" onclick="goTo('page-home')">← Back to Series</button>
+    <div class="page-title">
+      <div class="sup">Ultimate Series · Class 10</div>
+      <h2>Choose a Subject</h2>
+    </div>
+    <div class="grid-2">
+      <div class="subj-card" onclick="goTo('page-science')">
+        <div class="subj-icon">🔬</div>
+        <h3>Ultimate Science</h3>
+        <p>All 13 CBSE Class 10 chapters</p>
+      </div>
+      <div class="subj-card" onclick="goTo('page-sst')">
+        <div class="subj-icon">🌍</div>
+        <h3>Ultimate SST</h3>
+        <p>History, Geography, Civics &amp; Economics</p>
+      </div>
+      <div class="subj-card" onclick="goTo('page-english')">
+        <div class="subj-icon">📖</div>
+        <h3>Ultimate English</h3>
+        <p>First Flight, Footprints &amp; Grammar</p>
+      </div>
+      <div class="subj-card" onclick="goTo('page-hindi')">
+        <div class="subj-icon">🗣️</div>
+        <h3>Ultimate Hindi</h3>
+        <p>Kshitij, Kritika &amp; Vyakaran</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ULTIMATE SCIENCE — 13 Chapters -->
+  <div id="page-science" class="page">
+    <button class="back-btn" onclick="goTo('page-ultimate')">← Back to Subjects</button>
+    <div class="page-title">
+      <div class="sup">Ultimate Series · Science · Class 10 CBSE</div>
+      <h2>Science — All Chapters</h2>
+    </div>
+    <div class="chapter-card">
+
+      <div class="unit-label">Unit 1 — Chemical Substances</div>
+      <div class="ch-row">
+        <div class="ch-num">01</div>
+        <div class="ch-name">Chemical Reactions and Equations</div>
+        <div class="ch-actions">
+          <a href="DRIVE_LINK_CH1" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_LINK_CH1" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="ch-row">
+        <div class="ch-num">02</div>
+        <div class="ch-name">Acids, Bases and Salts</div>
+        <div class="ch-actions">
+          <a href="DRIVE_LINK_CH2" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_LINK_CH2" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="ch-row">
+        <div class="ch-num">03</div>
+        <div class="ch-name">Metals and Non-metals</div>
+        <div class="ch-actions">
+          <a href="DRIVE_LINK_CH3" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_LINK_CH3" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="ch-row">
+        <div class="ch-num">04</div>
+        <div class="ch-name">Carbon and its Compounds</div>
+        <div class="ch-actions">
+          <a href="DRIVE_LINK_CH4" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_LINK_CH4" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+
+      <div class="unit-label">Unit 2 — World of Living</div>
+      <div class="ch-row">
+        <div class="ch-num">05</div>
+        <div class="ch-name">Life Processes</div>
+        <div class="ch-actions">
+          <a href="https://drive.google.com/file/d/1T6fCznKmOudM2AezEy_yb-n_ogFOuakx/view?usp=sharing" target="_blank" class="btn-view">👁 View</a>
+          <a href="https://drive.google.com/file/d/1T6fCznKmOudM2AezEy_yb-n_ogFOuakx/view?usp=sharing" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="ch-row">
+        <div class="ch-num">06</div>
+        <div class="ch-name">Control and Coordination</div>
+        <div class="ch-actions">
+          <a href="DRIVE_LINK_CH6" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_LINK_CH6" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="ch-row">
+        <div class="ch-num">07</div>
+        <div class="ch-name">How do Organisms Reproduce?</div>
+        <div class="ch-actions">
+          <a href="DRIVE_LINK_CH7" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_LINK_CH7" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="ch-row">
+        <div class="ch-num">08</div>
+        <div class="ch-name">Heredity</div>
+        <div class="ch-actions">
+          <a href="DRIVE_LINK_CH8" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_LINK_CH8" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+
+      <div class="unit-label">Unit 3 — Natural Phenomena</div>
+      <div class="ch-row">
+        <div class="ch-num">09</div>
+        <div class="ch-name">Light — Reflection and Refraction</div>
+        <div class="ch-actions">
+          <a href="DRIVE_LINK_CH9" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_LINK_CH9" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="ch-row">
+        <div class="ch-num">10</div>
+        <div class="ch-name">The Human Eye and the Colourful World</div>
+        <div class="ch-actions">
+          <a href="DRIVE_LINK_CH10" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_LINK_CH10" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+
+      <div class="unit-label">Unit 4 — Effects of Electric Current</div>
+      <div class="ch-row">
+        <div class="ch-num">11</div>
+        <div class="ch-name">Electricity</div>
+        <div class="ch-actions">
+          <a href="DRIVE_LINK_CH11" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_LINK_CH11" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="ch-row">
+        <div class="ch-num">12</div>
+        <div class="ch-name">Magnetic Effects of Electric Current</div>
+        <div class="ch-actions">
+          <a href="DRIVE_LINK_CH12" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_LINK_CH12" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+
+      <div class="unit-label">Unit 5 — Natural Resources</div>
+      <div class="ch-row">
+        <div class="ch-num">13</div>
+        <div class="ch-name">Our Environment</div>
+        <div class="ch-actions">
+          <a href="DRIVE_LINK_CH13" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_LINK_CH13" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ULTIMATE SST -->
+  <div id="page-sst" class="page">
+    <button class="back-btn" onclick="goTo('page-ultimate')">← Back to Subjects</button>
+    <div class="page-title">
+      <div class="sup">Ultimate Series · SST · Class 10 CBSE</div>
+      <h2>Social Science</h2>
+    </div>
+    <div class="chapter-card">
+      <div class="unit-label">History — India and the Contemporary World II</div>
+      <div class="ch-row">
+        <div class="ch-num">H</div>
+        <div class="ch-name">History Notes</div>
+        <div class="ch-actions">
+          <a href="DRIVE_SST_HISTORY" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_SST_HISTORY" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="unit-label">Geography — Contemporary India II</div>
+      <div class="ch-row">
+        <div class="ch-num">G</div>
+        <div class="ch-name">Geography Notes</div>
+        <div class="ch-actions">
+          <a href="DRIVE_SST_GEO" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_SST_GEO" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="unit-label">Civics — Democratic Politics II</div>
+      <div class="ch-row">
+        <div class="ch-num">C</div>
+        <div class="ch-name">Civics Notes</div>
+        <div class="ch-actions">
+          <a href="DRIVE_SST_CIVICS" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_SST_CIVICS" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="unit-label">Economics — Understanding Economic Development</div>
+      <div class="ch-row">
+        <div class="ch-num">E</div>
+        <div class="ch-name">Economics Notes</div>
+        <div class="ch-actions">
+          <a href="DRIVE_SST_ECO" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_SST_ECO" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ULTIMATE ENGLISH -->
+  <div id="page-english" class="page">
+    <button class="back-btn" onclick="goTo('page-ultimate')">← Back to Subjects</button>
+    <div class="page-title">
+      <div class="sup">Ultimate Series · English · Class 10 CBSE</div>
+      <h2>English</h2>
+    </div>
+    <div class="chapter-card">
+      <div class="unit-label">First Flight</div>
+      <div class="ch-row">
+        <div class="ch-num">FF</div>
+        <div class="ch-name">First Flight — All Chapters</div>
+        <div class="ch-actions">
+          <a href="DRIVE_ENG_FF" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_ENG_FF" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="unit-label">Footprints Without Feet</div>
+      <div class="ch-row">
+        <div class="ch-num">FW</div>
+        <div class="ch-name">Footprints Without Feet — All Chapters</div>
+        <div class="ch-actions">
+          <a href="DRIVE_ENG_FW" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_ENG_FW" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="unit-label">Grammar &amp; Writing Skills</div>
+      <div class="ch-row">
+        <div class="ch-num">GR</div>
+        <div class="ch-name">Grammar Notes</div>
+        <div class="ch-actions">
+          <a href="DRIVE_ENG_GR" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_ENG_GR" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ULTIMATE HINDI -->
+  <div id="page-hindi" class="page">
+    <button class="back-btn" onclick="goTo('page-ultimate')">← Back to Subjects</button>
+    <div class="page-title">
+      <div class="sup">Ultimate Series · Hindi · Class 10 CBSE</div>
+      <h2>Hindi</h2>
+    </div>
+    <div class="chapter-card">
+      <div class="unit-label">Kshitij — Part 2</div>
+      <div class="ch-row">
+        <div class="ch-num">KS</div>
+        <div class="ch-name">Kshitij Notes</div>
+        <div class="ch-actions">
+          <a href="DRIVE_HIN_KS" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_HIN_KS" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="unit-label">Kritika — Part 2</div>
+      <div class="ch-row">
+        <div class="ch-num">KR</div>
+        <div class="ch-name">Kritika Notes</div>
+        <div class="ch-actions">
+          <a href="DRIVE_HIN_KR" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_HIN_KR" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+      <div class="unit-label">Vyakaran</div>
+      <div class="ch-row">
+        <div class="ch-num">VY</div>
+        <div class="ch-name">Vyakaran Notes</div>
+        <div class="ch-actions">
+          <a href="DRIVE_HIN_VY" target="_blank" class="btn-view">👁 View</a>
+          <a href="DRIVE_HIN_VY" target="_blank" class="btn-dl">⬇ PDF</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMING SOON -->
+  <div id="page-coming" class="page">
+    <button class="back-btn" onclick="goTo('page-home')">← Back to Series</button>
+    <div class="coming-soon">
+      <div class="cs-icon" id="cs-icon">🚀</div>
+      <h3 id="cs-title">Coming Soon!</h3>
+      <p id="cs-sub">Notes are being prepared. Subscribe to the YouTube channel to get notified!</p>
+      <br>
+      <a href="https://www.youtube.com/@VanshMehrasapiens" target="_blank" class="yt-btn" style="display:inline-flex;margin-top:12px;">▶ Subscribe on YouTube</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 Sapiens Classes · All notes are for educational purposes only</p>
+</footer>
+
+<script>
+  function goTo(pageId, title, icon, sub) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    if (pageId === 'page-coming') {
+      document.getElementById('cs-title').textContent = (title || 'Coming Soon') + ' — Coming Soon!';
+      document.getElementById('cs-icon').textContent = icon || '🚀';
+      document.getElementById('cs-sub').textContent = 'Notes for ' + (title || 'this series') + ' (' + (sub || '') + ') are being prepared. Subscribe to the YouTube channel to get notified!';
+    }
+    document.getElementById(pageId).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
