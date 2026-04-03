@@ -21,23 +21,15 @@
     --radius: 20px;
   }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* CHRONIC AI AMBIENCE */
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+  
+  /* CHRONIC AI BACKGROUND */
   body::before {
     content: ''; position: fixed; inset: 0;
     background: radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
                 radial-gradient(circle at 85% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 40%);
     z-index: -1;
   }
-
-  /* SCANLINE & GRAIN */
   body::after {
     content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
@@ -48,53 +40,46 @@
 
   /* ANIMATIONS */
   @keyframes materialize {
-    0% { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(15px); }
+    0% { opacity: 0; transform: translateY(20px) scale(0.98); filter: blur(10px); }
     100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
   }
 
   .page { display: none; }
   .page.active { display: block; }
-  .page.active .s-card, .page.active .ch-row { animation: materialize 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+  .page.active .s-card, .page.active .ch-row, .page.active .branch-head { animation: materialize 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 
   header { text-align: center; margin-bottom: 50px; }
   h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.5rem, 8vw, 4.5rem); font-weight: 800; color: #fff; text-shadow: 0 0 20px var(--indigo-glow); }
 
-  .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 30px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
   
-  /* CARDS: MAGNETIC & GLOW */
   .s-card {
     background: var(--card); backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: var(--radius);
     padding: 30px; cursor: pointer; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative; overflow: hidden;
   }
   .s-card:hover { transform: translateY(-8px); border-color: var(--border-hover); box-shadow: 0 15px 40px var(--indigo-glow); }
-  .s-card.pink:hover { border-color: var(--pink); box-shadow: 0 15px 40px rgba(236, 72, 153, 0.2); }
   
   .badge { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--indigo); margin-bottom: 10px; display: block; }
-  .badge.pink { color: var(--pink); }
 
-  /* NAVIGATION */
   .back-btn { background: none; border: 1px solid var(--border); color: var(--muted); padding: 12px 24px; border-radius: 50px; cursor: pointer; margin-bottom: 30px; font-weight: 500; transition: 0.3s; }
   .back-btn:hover { background: var(--indigo-glow); color: #fff; }
 
-  /* TABS SYSTEM */
-  .ch-detail-box { width: 100%; margin-top: 20px; }
-  .ch-tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; }
-  .t-btn { padding: 8px 18px; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: var(--muted); cursor: pointer; transition: 0.4s; font-size: 12px; }
-  .t-btn.active { background: var(--indigo); color: #fff; border-color: var(--indigo); box-shadow: 0 0 20px var(--indigo-glow); }
-  .t-content { 
-    animation: fadeIn 0.5s ease; border: 1px solid var(--border); background: rgba(99, 102, 241, 0.05); 
-    padding: 25px; border-radius: 15px; text-align: center; margin-top: 10px;
-  }
+  /* BRANCH STYLES */
+  .branch-head { font-family: 'Syne'; font-size: 1.5rem; color: var(--indigo); margin-bottom: 20px; border-left: 4px solid var(--indigo); padding-left: 15px; }
+
+  .ch-row { border: 1px solid var(--border); background: var(--card); border-radius: 15px; margin-bottom: 10px; padding: 20px; transition: 0.3s; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .ch-row:hover { border-color: var(--indigo); background: rgba(99, 102, 241, 0.05); }
+  
+  .t-btn { padding: 8px 18px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: var(--muted); cursor: pointer; transition: 0.4s; font-size: 11px; }
+  .t-btn.active { background: var(--indigo); color: #fff; box-shadow: 0 0 15px var(--indigo-glow); }
+  
+  .t-content { border: 1px solid var(--border); background: rgba(255,255,255,0.02); padding: 20px; border-radius: 15px; text-align: center; margin-top: 10px; width: 100%; animation: fadeIn 0.4s ease; }
   @keyframes fadeIn { from { opacity: 0; filter: blur(5px); } to { opacity: 1; filter: blur(0); } }
 
-  .ch-row { border: 1px solid var(--border); background: var(--card); border-radius: 15px; margin-bottom: 10px; padding: 20px; transition: 0.3s; }
-  .ch-row:hover { border-color: var(--indigo); }
-  .ch-active-trace { border-color: var(--indigo) !important; box-shadow: 0 0 15px var(--indigo-glow); }
+  .btn-view { display: inline-block; padding: 8px 20px; background: var(--indigo); color: #fff; text-decoration: none; border-radius: 8px; font-size: 13px; font-weight: bold; }
 
-  .btn-view { display: inline-block; padding: 10px 25px; background: var(--indigo); color: #fff; text-decoration: none; border-radius: 10px; font-weight: bold; }
-
-  footer { text-align: center; margin-top: 60px; padding: 20px; color: var(--faint); font-size: 12px; opacity: 0.4; }
+  footer { text-align: center; margin-top: 60px; padding: 20px; color: var(--muted); font-size: 11px; opacity: 0.4; letter-spacing: 2px; }
 </style>
 </head>
 <body>
@@ -102,108 +87,105 @@
 <div class="wrapper">
   <header>
     <h1>SAPIENS PORTAL</h1>
-    <p style="color: var(--muted); letter-spacing: 4px; font-size: 12px;">INTELLIGENT CONTENT DELIVERY</p>
+    <p style="color: var(--muted); letter-spacing: 4px; font-size: 10px;">NEURAL ACCESS GRANTED</p>
   </header>
 
   <div id="page-home" class="page active">
-    <div style="margin-bottom: 20px; color: var(--indigo); font-weight: bold;">[ MAIN LECTURE SERIES ]</div>
+    <div class="badge">[ CORE DIRECTORY ]</div>
     <div class="grid-3">
-      <div class="s-card" onclick="goTo('page-ultimate-select')">
-        <span class="badge">Class 10</span>
-        <h3>ULTIMATE SERIES</h3>
-        <p style="font-size: 13px; color: var(--muted); margin-top: 10px;">Full Curriculum Archive</p>
-      </div>
-      <div class="s-card" style="opacity: 0.4;">
-        <span class="badge">Class 11</span>
-        <h3>STORM SERIES</h3>
-        <p style="font-size: 13px; color: var(--muted); margin-top: 10px;">Coming Soon</p>
-      </div>
-      <div class="s-card" style="opacity: 0.4;">
-        <span class="badge">Class 12</span>
-        <h3>FINAL FRONTIER</h3>
-        <p style="font-size: 13px; color: var(--muted); margin-top: 10px;">Coming Soon</p>
-      </div>
+      <div class="s-card" onclick="goTo('page-ultimate-select')"><span class="badge">Class 10</span><h3>ULTIMATE SERIES</h3></div>
+      <div class="s-card" style="opacity: 0.3;"><h3>STORM SERIES</h3></div>
+      <div class="s-card" style="opacity: 0.3;"><h3>FINAL FRONTIER</h3></div>
     </div>
-
-    <div style="margin: 40px 0 20px; color: var(--pink); font-weight: bold;">[ REVISION SERIES ]</div>
+    <div class="badge" style="margin-top:40px; color: var(--pink);">[ REVISION PROTOCOL ]</div>
     <div class="grid-3">
-      <div class="s-card pink" onclick="goTo('page-ultimate-revision')">
-        <span class="badge pink">10th Rev</span>
-        <h3>ULTIMATE REVISION</h3>
-        <p style="font-size: 13px; color: var(--muted); margin-top: 10px;">One-Shot Mastery</p>
-      </div>
-      <div class="s-card pink" style="opacity: 0.4;">
-        <span class="badge pink">11th Rev</span>
-        <h3>STORM REVISION</h3>
-      </div>
-      <div class="s-card pink" style="opacity: 0.4;">
-        <span class="badge pink">12th Rev</span>
-        <h3>FINAL FRONTIER REV</h3>
-      </div>
-    </div>
-  </div>
-
-  <div id="page-ultimate-revision" class="page">
-    <button class="back-btn" onclick="goTo('page-home')">← TERMINAL</button>
-    <h2 style="margin-bottom: 20px; font-family: Syne;">Ultimate Revision Sections</h2>
-    <div class="grid-3">
-      <div class="s-card" onclick="goTo('page-science')"><h3>Ultimate Science</h3></div>
-      <div class="s-card"><h3>Ultimate SST</h3></div>
-      <div class="s-card"><h3>Ultimate English</h3></div>
-      <div class="s-card"><h3>Ultimate Hindi</h3></div>
+      <div class="s-card" style="border-color: var(--pink)" onclick="goTo('page-ultimate-revision-select')"><span class="badge" style="color:var(--pink)">10th Rev</span><h3>ULTIMATE REVISION</h3></div>
+      <div class="s-card" style="opacity: 0.3;"><h3>STORM REVISION</h3></div>
+      <div class="s-card" style="opacity: 0.3;"><h3>FINAL FRONTIER REV</h3></div>
     </div>
   </div>
 
   <div id="page-ultimate-select" class="page">
     <button class="back-btn" onclick="goTo('page-home')">← TERMINAL</button>
-    <h2 style="margin-bottom: 20px; font-family: Syne;">Ultimate Series Database</h2>
     <div class="grid-3">
-      <div class="s-card" onclick="goTo('page-science')"><h3>Science</h3></div>
+      <div class="s-card" onclick="goTo('page-science-branches')"><h3>Science</h3></div>
       <div class="s-card"><h3>SST</h3></div>
       <div class="s-card"><h3>English</h3></div>
       <div class="s-card"><h3>Hindi</h3></div>
     </div>
   </div>
 
-  <div id="page-science" class="page">
+  <div id="page-ultimate-revision-select" class="page">
     <button class="back-btn" onclick="goTo('page-home')">← TERMINAL</button>
-    <h2 style="margin-bottom: 20px; font-family: Syne;">Class 10 Science</h2>
+    <div class="grid-3">
+      <div class="s-card" onclick="goTo('page-science-branches')"><h3>Ultimate Science</h3></div>
+      <div class="s-card"><h3>Ultimate SST</h3></div>
+      <div class="s-card"><h3>Ultimate English</h3></div>
+      <div class="s-card"><h3>Ultimate Hindi</h3></div>
+    </div>
+  </div>
 
-    <div class="ch-row ch-active-trace">
-        <div style="font-weight: 800; font-family: Syne; color: var(--indigo);">CH-05 LIFE PROCESSES</div>
-        <div class="ch-detail-box">
+  <div id="page-science-branches" class="page">
+    <button class="back-btn" onclick="goTo('page-home')">← BACK</button>
+    <div class="badge">Select Specialized Branch</div>
+    <div class="grid-3">
+      <div class="s-card" onclick="goTo('page-chem')"><span class="badge">Unit A</span><h3>Chemistry</h3></div>
+      <div class="s-card" onclick="goTo('page-bio')"><span class="badge">Unit B</span><h3>Biology</h3></div>
+      <div class="s-card" onclick="goTo('page-phy')"><span class="badge">Unit C</span><h3>Physics</h3></div>
+    </div>
+  </div>
+
+  <div id="page-chem" class="page">
+    <button class="back-btn" onclick="goTo('page-science-branches')">← BRANCHES</button>
+    <div class="branch-head">Chemical Substances</div>
+    <div class="ch-row"><span>01 Chemical Reactions & Equations</span><a href="#" class="btn-view">VIEW</a></div>
+    <div class="ch-row"><span>02 Acids, Bases and Salts</span><a href="#" class="btn-view">VIEW</a></div>
+    <div class="ch-row"><span>03 Metals and Non-metals</span><a href="#" class="btn-view">VIEW</a></div>
+    <div class="ch-row"><span>04 Carbon and its Compounds</span><a href="#" class="btn-view">VIEW</a></div>
+  </div>
+
+  <div id="page-bio" class="page">
+    <button class="back-btn" onclick="goTo('page-science-branches')">← BRANCHES</button>
+    <div class="branch-head">World of Living</div>
+    
+    <div class="ch-row" style="border-color: var(--indigo);">
+        <div style="width:100%">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <span style="font-weight:bold; color:var(--indigo)">05 Life Processes</span>
+            </div>
             <div class="ch-tabs">
-              <button class="t-btn active" onclick="tabMsg(event, 'lp-class')">CLASS NOTES</button>
-              <button class="t-btn" onclick="tabMsg(event, 'lp-pyq')">PYQ STRIKER</button>
-              <button class="t-btn" onclick="tabMsg(event, 'lp-extra')">EXTRA NOTES</button>
-              <button class="t-btn" onclick="tabMsg(event, 'lp-mind')">MINDMAP</button>
+                <button class="t-btn active" onclick="tabMsg(event, 'lp-class')">CLASS NOTES</button>
+                <button class="t-btn" onclick="tabMsg(event, 'lp-pyq')">PYQ STRIKER</button>
+                <button class="t-btn" onclick="tabMsg(event, 'lp-extra')">EXTRA NOTES</button>
+                <button class="t-btn" onclick="tabMsg(event, 'lp-mind')">MINDMAP</button>
             </div>
             <div id="lp-class" class="t-content">
-               <a href="https://drive.google.com/file/d/1wsrThSwSBHlCFXdz5VSTzvw86FgVtAd4/view?usp=sharing" target="_blank" class="btn-view">Download Life Processes PDF</a>
+                <a href="https://drive.google.com/file/d/1wsrThSwSBHlCFXdz5VSTzvw86FgVtAd4/view?usp=sharing" target="_blank" class="btn-view">DOWNLOAD PDF</a>
             </div>
-            <div id="lp-pyq" class="t-content" style="display: none;"><p>PYQ Striker 2015-2025 loading...</p></div>
-            <div id="lp-extra" class="t-content" style="display: none;"><p>In-depth biology insights coming soon.</p></div>
-            <div id="lp-mind" class="t-content" style="display: none;"><p>Interactive map processing...</p></div>
+            <div id="lp-pyq" class="t-content" style="display:none">Scanning PYQs...</div>
+            <div id="lp-extra" class="t-content" style="display:none">Diving deeper into Bio...</div>
+            <div id="lp-mind" class="t-content" style="display:none">Mapping Systems...</div>
         </div>
     </div>
+    
+    <div class="ch-row"><span>06 Control and Coordination</span><a href="#" class="btn-view">VIEW</a></div>
+    <div class="ch-row"><span>07 Reproduction</span><a href="#" class="btn-view">VIEW</a></div>
+    <div class="ch-row"><span>08 Heredity</span><a href="#" class="btn-view">VIEW</a></div>
+  </div>
 
-    <div class="ch-row">CH-01 Chemical Reactions</div>
-    <div class="ch-row">CH-02 Acids, Bases and Salts</div>
-    <div class="ch-row">CH-03 Metals and Non-metals</div>
-    <div class="ch-row">CH-04 Carbon and its Compounds</div>
-    <div class="ch-row">CH-06 Control and Coordination</div>
-    <div class="ch-row">CH-07 Reproduction</div>
-    <div class="ch-row">CH-08 Heredity</div>
-    <div class="ch-row">CH-09 Light</div>
-    <div class="ch-row">CH-10 Human Eye</div>
-    <div class="ch-row">CH-11 Electricity</div>
-    <div class="ch-row">CH-12 Magnetic Effects</div>
-    <div class="ch-row">CH-13 Our Environment</div>
+  <div id="page-phy" class="page">
+    <button class="back-btn" onclick="goTo('page-science-branches')">← BRANCHES</button>
+    <div class="branch-head">Natural Phenomena</div>
+    <div class="ch-row"><span>09 Light</span><a href="#" class="btn-view">VIEW</a></div>
+    <div class="ch-row"><span>10 Human Eye</span><a href="#" class="btn-view">VIEW</a></div>
+    <div class="ch-row"><span>11 Electricity</span><a href="#" class="btn-view">VIEW</a></div>
+    <div class="ch-row"><span>12 Magnetic Effects</span><a href="#" class="btn-view">VIEW</a></div>
+    <div class="ch-row"><span>13 Our Environment</span><a href="#" class="btn-view">VIEW</a></div>
   </div>
 
 </div>
 
-<footer>© 2026 Sapiens Classes | Designed for Chronic AI Aesthetic</footer>
+<footer>SAPIENS CLASSES // CHRONIC AI v3.1</footer>
 
 <script>
   function goTo(pageId) {
@@ -211,20 +193,19 @@
     const target = document.getElementById(pageId);
     target.classList.add('active');
     
-    // Staggered Stagger Animation
-    const items = target.querySelectorAll('.s-card, .ch-row');
+    const items = target.querySelectorAll('.s-card, .ch-row, .branch-head');
     items.forEach((item, i) => {
         item.style.animation = 'none';
-        item.offsetHeight; // trigger reflow
-        item.style.animation = `materialize 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both ${i * 0.08}s`;
+        item.offsetHeight; 
+        item.style.animation = `materialize 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both ${i * 0.07}s`;
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function tabMsg(evt, tabId) {
-    let panels = document.querySelectorAll('.t-content');
+    let panels = evt.currentTarget.closest('.ch-row').querySelectorAll('.t-content');
     panels.forEach(p => p.style.display = 'none');
-    let btns = document.querySelectorAll('.t-btn');
+    let btns = evt.currentTarget.closest('.ch-tabs').querySelectorAll('.t-btn');
     btns.forEach(b => b.classList.remove('active'));
     document.getElementById(tabId).style.display = 'block';
     evt.currentTarget.classList.add('active');
